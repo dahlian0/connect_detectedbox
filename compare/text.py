@@ -19,4 +19,3 @@ for i in file_list:
   print(df)
   df.to_csv(os.path.join(current_dir,'1','merge_'+str(i)+'.csv'),encoding='utf_8',index=False)
 
-  #word=df.iloc[1].str.split('left_x:')[-1].split('top_y:')[0]

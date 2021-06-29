@@ -10,13 +10,12 @@ l1 = df1[['left_x','top_y']].as_matrix()
 l2 = df2[['left_x','top_y']].as_matrix()
 
 
+
 def nearest(a, b):
     d=[]
     while (len(a) > 0) and (len(b) > 0):
-
         out_min = 9999999999.9
         out_res = []
-
         for i in a:
             min = np.linalg.norm(i - b[0])
             result = [min, i, b[0]]  
@@ -24,7 +23,7 @@ def nearest(a, b):
                 c = np.linalg.norm(i - j)
                 if min > c:
                     min = c
-                    result = [min, i, j]  
+                    result = [min, i.tolist(), j.tolist()]  
                 else:
                     pass
 
@@ -42,5 +41,16 @@ def nearest(a, b):
     return  df
 
 df_result= nearest(l1,l2)
-#print(df_result)
+df_result=pd.concat([df_result["distance"],df_result["before"].apply(pd.Series),df_result["after"].apply(pd.Series)], axis = 1)
+df_result.columns=["distance", "before_x", "before_y","after_x","after_y"]
+category= df1[['left_x','top_y','class','probability']]
+category.columns=["before_x", "before_y","class_before",'probability_before']
+df_result=pd.merge(df_result, category, on=['before_x','before_y'])
+category2= df2[['left_x','top_y','class','probability']]
+category2.columns=["after_x", "after_y","class_after",'probability_after']
+df_result=pd.merge(df_result, category2, on=['after_x','after_y'])
+print(df_result)
 df_result.to_csv(os.path.join(current_dir,'1','compare_08_09.csv'),encoding='utf_8',index=False)
+
+#print(category)
+#

@@ -4,6 +4,7 @@ import glob
 import pandas as pd
 import re
 
+current_dir=os.path.dirname(os.path.abspath(__file__))
 # 最近傍のBounding Boxの組み合わせを記したDataFrameを返す
 def nearest(a, b):
     d=[]
@@ -34,7 +35,6 @@ def nearest(a, b):
 
 # 2つを比べる
 def compare_two(csv1, csv2):
-    current_dir=os.path.dirname(os.path.abspath(__file__))
     df1=pd.read_csv(os.path.join(current_dir,'1', csv1))
     df2=pd.read_csv(os.path.join(current_dir,'1', csv2))
     l1 = df1[['left_x','top_y']].as_matrix()
@@ -48,6 +48,12 @@ def compare_two(csv1, csv2):
     category2= df2[['left_x','top_y','class','probability']]
     category2.columns=["after_x", "after_y","class_after",'probability_after']
     df_result=pd.merge(df_result, category2, on=['after_x','after_y'])
-    df_result.to_csv(os.path.join(current_dir,'1','compare_08_09.csv'),encoding='utf_8',index=False)
+    #df_result.to_csv(os.path.join(current_dir,'1','compare_08_09.csv'),encoding='utf_8',index=False)
     return df_result
 
+
+dfA = compare_two("merge_output_05.txt.csv","merge_output_06.txt.csv")
+dfB = compare_two("merge_output_06.txt.csv","merge_output_07.txt.csv")
+df_result = pd.merge(dfA, dfB, left_on='after_x', right_on='before_x', how='outer')
+df_result.to_csv(os.path.join(current_dir,'1','compare3.csv'),encoding='utf_8',index=False)
+#print(df_result)

@@ -51,9 +51,22 @@ def compare_two(csv1, csv2):
     #df_result.to_csv(os.path.join(current_dir,'1','compare_08_09.csv'),encoding='utf_8',index=False)
     return df_result
 
+def comapare_many(list):
+    #最初の2つを繋げておく
+    # 5~9日だった場合、ここで５日と6日
+    df_result = compare_two(list[0],list[1])
+    #繋げていく
+    for index in range(len(list)-2):
+        # 5~9日だった場合、ここで6日と7日
+        df = compare_two(list[index+1],list[index+2])
+        print(index) ##最初の一回はsuffixがないため、分ける。ここで5~7日が繋がる
+        if index == 0 :
+            df_result = pd.merge(df_result,df, left_on=['after_x','after_y'], right_on=['before_x','before_y'], how='outer', suffixes=['', '_'+list[index+1]+''])
+        else :
+            df_result = pd.merge(df_result,df, left_on=['after_x_'+list[index]+'','after_y_'+list[index]+''], right_on=['before_x','before_y'], how='outer', suffixes=['_'+list[index]+'' , '_'+list[index+1]+''])
+    df_result.to_csv(os.path.join(current_dir,'1','compare3.csv'),encoding='utf_8',index=False)
+    return df_result
 
-dfA = compare_two("merge_output_05.txt.csv","merge_output_06.txt.csv")
-dfB = compare_two("merge_output_06.txt.csv","merge_output_07.txt.csv")
-df_result = pd.merge(dfA, dfB, left_on='after_x', right_on='before_x', how='outer')
-df_result.to_csv(os.path.join(current_dir,'1','compare3.csv'),encoding='utf_8',index=False)
-#print(df_result)
+list = ["05.csv","06.csv","07.csv","08.csv","09.csv"]
+comapare_many(list)
+

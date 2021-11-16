@@ -74,25 +74,21 @@ def compare_two_complete(num1, num2):
     df_concat = pd.concat([df1A, df1B], join='inner')
     return df_concat
 
-print(compare_two_complete('05','06'))
+#print(compare_two_complete('05','06'))
 
-# def comapare_many(list):
-#     #最初の2つを繋げておく
-#     # 5~9日だった場合、ここで５日と6日
-#     df_result = compare_two(list[0],list[1])
-#     #繋げていく
-#     for index in range(len(list)-2):
-#         # 5~9日だった場合、ここで6日と7日
-#         df = compare_two(list[index+1],list[index+2])
-#  ##最初の一回はsuffixがないため、分ける。ここで5~7日が繋がる
-#         if index == 0 :
-#             df_result = pd.merge(df_result,df, left_on=['after_x','after_y'], right_on=['before_x','before_y'], how='outer', suffixes=['', '_'+list[index+1]+''])
-#         else :
-#             df_result = pd.merge(df_result,df, left_on=['after_x_'+list[index]+'','after_y_'+list[index]+''], right_on=['before_x','before_y'], how='outer', suffixes=['_'+list[index]+'' , '_'+list[index+1]+''])
-#     df_result.to_csv(os.path.join(current_dir,'1','compare3.csv'),encoding='utf_8',index=False)
-#     return df_result
+def compare_many(list):
+    #最初の2つを繋げておく
+    df_result = compare_two_complete(list[0],list[1])
+    #繋げていく
+    for index in range(len(list)-2):
+        # 5~9日だった場合、ここで6日と7日
+        df = compare_two_complete(list[index+1],list[index+2])
+        df_result = pd.merge(df_result,df, on=['x_'+list[index+1]+'','y_'+list[index+1]+''], how='outer')
+    df_result.to_csv(os.path.join(current_dir,'1','compare4.csv'),encoding='utf_8',index=False)
+    return df_result
 
-# list = ["05.csv","06.csv","07.csv","08.csv","09.csv"]
+list = ["05","06","07","08","09"]
+compare_many(list)
 
 # #特定の値で
 # df1 = compare_two("05.csv","06.csv")

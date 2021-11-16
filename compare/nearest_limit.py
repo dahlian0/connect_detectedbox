@@ -70,7 +70,7 @@ def compare_two_complete(num1, num2):
     df1B['x_'+num2+''] = df1B['x_'+num2+''].shift(periods=offset)
     df1B['y_'+num2+''] = df1B['y_'+num2+''].shift(periods=offset)
     df1B['distance_'+num1+'_'+num2+''] = 0
-    df1B = df1B.fillna(0)
+    #df1B = df1B['x_'+num1+'','y_'+num1+'','x_'+num2+'','y_'+num2+''].fillna(0)
     df_concat = pd.concat([df1A, df1B], join='inner')
     return df_concat
 
@@ -83,6 +83,7 @@ def compare_many(list):
     for index in range(len(list)-2):
         # 5~9日だった場合、ここで6日と7日
         df = compare_two_complete(list[index+1],list[index+2])
+        print(df)
         df_result = pd.merge(df_result,df, on=['x_'+list[index+1]+'','y_'+list[index+1]+''], how='outer')
     df_result.to_csv(os.path.join(current_dir,'1','compare4.csv'),encoding='utf_8',index=False)
     return df_result

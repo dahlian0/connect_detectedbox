@@ -4,6 +4,7 @@ import glob
 import pandas as pd
 import re
 
+#05をどれだけ追えてるかだけを確認するスクリプト
 current_dir=os.path.dirname(os.path.abspath(__file__))
 # 最近傍のBounding Boxの組み合わせを記したDataFrameを返す
 def nearest(a, b):
@@ -67,19 +68,8 @@ def compare_two(num1, num2):
 def compare_two_complete(num1, num2):
     df1 = compare_two(num1,num2)
     df1A = df1[df1['distance_'+num1+'_'+num2+''] < 30]
-    df1B = df1[df1['distance_'+num1+'_'+num2+''] >= 30]
-    offset = len(df1B)
-    df1B = df1B.append([np.nan for x in range(offset)])
-    df1B['x_'+num2+''] = df1B['x_'+num2+''].shift(periods=offset)
-    df1B['y_'+num2+''] = df1B['y_'+num2+''].shift(periods=offset)
-    df1B['distance_'+num1+'_'+num2+''] = 0
-    print(df1B)
-    #df1B = df1B['x_'+num1+'','y_'+num1+'','x_'+num2+'','y_'+num2+''].fillna(0)
-    df_concat = pd.concat([df1A, df1B], join='inner')
-    df_concat=df_concat.drop_duplicates()
-    return df_concat
-
-#print(compare_two_complete('08','09'))
+    df_result=df1A.drop_duplicates()
+    return df_result
 
 def compare_many(list):
     #最初の2つを繋げておく
@@ -93,31 +83,4 @@ def compare_many(list):
     return df_result
 
 list = ["05","06","07","08","09"]
-compare_many(list)
-
-# #特定の値で
-# df1 = compare_two("05.csv","06.csv")
-# df1=pd.concat([df1["distance"],df1["before"].apply(pd.Series),df1["after"].apply(pd.Series)], axis = 1)
-# df1.columns=["distance_05_06", "x_05", "y_05","x_06","y_06"]
-
-# df1A = df1[df1['distance_05_06'] < 30]
-# df1B = df1[df1['distance_05_06'] >= 30]
-# offset = 3
-# df1B = df1B.append([np.nan for x in range(offset)])
-# df1B["x_06"] = df1B["x_06"].shift(periods=offset)
-# df1B["y_06"] = df1B["y_06"].shift(periods=offset)
-# df1B['distance_05_06'] = 0
-# df1B = df1B.fillna(0)
-# df_concat = pd.concat([df1A, df1B], join='inner')
-# print(df_concat)
-
-
-# df2 = compare_two("06.csv","07.csv")
-# df2=pd.concat([df2["distance"],df2["before"].apply(pd.Series),df2["after"].apply(pd.Series)], axis = 1)
-# df2.columns=["distance_06_07", "x_06", "y_06","x_07","y_07"]
-#df_result = pd.merge(df1,df2, left_on=['x_06','y_06'], right_on=['x_06','y_06'], how='outer')
-#print(df_result)
-
-
-
-
+print(compare_many(list))

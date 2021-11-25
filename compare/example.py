@@ -34,14 +34,14 @@ def nearest(a, b):
         d.append(out_res) 
         # df = pd.DataFrame(d)
         # df.columns=["distance", "before", "after"]
-    if len(a) != 0:
-        for i in a :
-            left = [0,i.tolist(),[0,0]]
-            d.append (left) 
-    if len(b) != 0:
-        for i in b :
-            left = [0,[0,0],i.tolist()]
-            d.append (left) 
+    # if len(a) != 0:
+    #     for i in a :
+    #         left = [0,i.tolist(),[0,0]]
+    #         d.append (left) 
+    # if len(b) != 0:
+    #     for i in b :
+    #         left = [0,[0,0],i.tolist()]
+    #         d.append (left) 
     df = pd.DataFrame(d)
     df.columns=["distance", "before", "after"]
     return  df
@@ -50,19 +50,26 @@ def nearest(a, b):
 def compare_two(num1, num2):
     df1=pd.read_csv(os.path.join(current_dir,'1', ''+num1+'.csv'))
     df2=pd.read_csv(os.path.join(current_dir,'1', ''+num2+'.csv'))
+    #ここで重複したBoundingBoxをProbabilityの大きい方のみにする
+    df2 = df2.sort_values('probability')
+    df2 = df2.drop_duplicates(subset=['left_x','top_y'], keep='last')
+    df2=df2.reset_index()
     l1 = df1[['left_x','top_y']].as_matrix()
     l2 = df2[['left_x','top_y']].as_matrix()
     df_result= nearest(l1,l2)
+    print(df_result)
     df_result =pd.concat([df_result["distance"],df_result["before"].apply(pd.Series),df_result["after"].apply(pd.Series)], axis = 1)
     df_result.columns=['distance_'+num1+'_'+num2+'', 'x_'+num1+'', 'y_'+num1+'','x_'+num2+'','y_'+num2+'']
     category_num1= df1[['left_x','top_y','class']]
     category_num1.columns=['x_'+num1+'', 'y_'+num1+'','class_'+num1+'']
-    df_result=pd.merge(df_result, category_num1, on=['x_'+num1+'', 'y_'+num1+''])
+    df_result=pd.merge(df_result, category_num1, on=['x_'+num1+'', 'y_'+num1+''], how='outer')
     category_num2= df2[['left_x','top_y','class']]
     category_num2.columns=['x_'+num2+'', 'y_'+num2+'','class_'+num2+'']
-    df_result=pd.merge(df_result, category_num2, on=['x_'+num2+'', 'y_'+num2+''])
-    df_result=df_result.drop_duplicates()
+    df_result=pd.merge(df_result, category_num2, on=['x_'+num2+'', 'y_'+num2+''], how='outer')
+    # df_result=df_result.drop_duplicates()
     return df_result
+
+print(compare_two('06','07'))
 
 #上限値を定める
 def compare_two_complete(num1, num2):

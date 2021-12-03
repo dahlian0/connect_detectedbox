@@ -32,8 +32,7 @@ def nearest(a, b):
         a = np.delete(a, np.where(a[:] == out_res[1])[0], 0)
         b = np.delete(b, np.where(b[:] == out_res[2])[0], 0)
         d.append(out_res) 
-        # df = pd.DataFrame(d)
-        # df.columns=["distance", "before", "after"]
+    #元のexcelファイルを外部結合すれば解決、この部分はいらないはず
     # if len(a) != 0:
     #     for i in a :
     #         left = [0,i.tolist(),[0,0]]

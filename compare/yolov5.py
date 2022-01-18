@@ -83,6 +83,7 @@ def compare_many(list):
         df = compare_two(list[index+1],list[index+2])
         df_result = pd.merge(df_result,df, on=['x_'+list[index+1]+'','y_'+list[index+1]+''], how='outer')
     df_result.to_csv(os.path.join(current_dir,'compare_4days','result.csv'),encoding='utf_8',index=False)
+    print(df_result)
     return df_result
 
 list = ["0604","0605","0606","0607"]

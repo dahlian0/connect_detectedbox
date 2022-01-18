@@ -9,6 +9,7 @@ from itertools import product
 
 current_dir=os.path.dirname(os.path.abspath(__file__))
 # この関数をもっと理解する
+#それかこの前のexample.py使う
 def nearest(a, b):
     na, nb = len(a), len(b)
     ## Combinations of a and b

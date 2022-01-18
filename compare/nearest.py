@@ -9,7 +9,8 @@ current_dir=os.path.dirname(os.path.abspath(__file__))
 def nearest(a, b):
     d=[]
     while (len(a) > 0) and (len(b) > 0):
-        out_min = 9999999999.9
+
+        out_min = 999999999999999.9
         out_res = []
         for i in a:
             min = np.linalg.norm(i - b[0])

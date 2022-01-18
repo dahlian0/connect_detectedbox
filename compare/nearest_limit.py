@@ -4,25 +4,28 @@ import glob
 import pandas as pd
 import re
 
+import numpy as np
+from itertools import product
+
+
+
 current_dir=os.path.dirname(os.path.abspath(__file__))
 # 最近傍のBounding Boxの組み合わせを記したDataFrameを返す
 def nearest(a, b):
     d=[]
     while (len(a) > 0) and (len(b) > 0):
-        out_min = 9999999999.9
+        out_min = 999999999999999.9
         out_res = []
         for i in a:
-            if i is not np.nan:
-                min = np.linalg.norm(i - b[0])
-                result = [min, i, b[0]]  
-                for j in b:
-                    if j is not np.nan:
-                        c = np.linalg.norm(i - j)
-                        if min > c:
-                            min = c
-                            result = [min, i.tolist(), j.tolist()]  
-                        else:
-                            pass
+            min = np.linalg.norm(i - b[0])
+            result = [min, i, b[0]]  
+            for j in b:
+                c = np.linalg.norm(i - j)
+                if min > c:
+                    min = c
+                    result = [min, i.tolist(), j.tolist()]  
+                else:
+                    pass
 
             if out_min > min:
                 out_min = min
@@ -31,24 +34,26 @@ def nearest(a, b):
         a = np.delete(a, np.where(a[:] == out_res[1])[0], 0)
         b = np.delete(b, np.where(b[:] == out_res[2])[0], 0)
         d.append(out_res) 
-        # df = pd.DataFrame(d)
-        # df.columns=["distance", "before", "after"]
-    if len(a) != 0:
-        for i in a :
-            left = [0,i.tolist(),[0,0]]
-            d.append (left) 
-    if len(b) != 0:
-        for i in b :
-            left = [0,[0,0],i.tolist()]
-            d.append (left) 
-    df = pd.DataFrame(d)
-    df.columns=["distance", "before", "after"]
+    
+    #組み合わせに入らなかったものもdfに書き加える。距離が0であるからここ直す。
+    # if len(a) != 0:
+    #     for i in a :
+    #         left = [0,i.tolist(),[0,0]]
+    #         d.append (left) 
+    # if len(b) != 0:
+    #     for i in b :
+    #         left = [0,[0,0],i.tolist()]
+    #         d.append (left) 
+        df = pd.DataFrame(d)
+        df.columns=["distance", "before", "after"]
     return  df
 
 # 2つを比べる
 def compare_two(num1, num2):
     df1=pd.read_csv(os.path.join(current_dir,'1', ''+num1+'.csv'))
     df2=pd.read_csv(os.path.join(current_dir,'1', ''+num2+'.csv'))
+    print(len(df1))
+    print(len(df2))
     l1 = df1[['left_x','top_y']].as_matrix()
     l2 = df2[['left_x','top_y']].as_matrix()
     df_result= nearest(l1,l2)
@@ -60,10 +65,12 @@ def compare_two(num1, num2):
     category_num2= df2[['left_x','top_y','class']]
     category_num2.columns=['x_'+num2+'', 'y_'+num2+'','class_'+num2+'']
     df_result=pd.merge(df_result, category_num2, on=['x_'+num2+'', 'y_'+num2+''])
-    df_result=df_result.drop_duplicates()
     return df_result
 
+print(compare_two('05','06'))
+print(len(compare_two('05','06')))
 #上限値を定める
+#ここで距離30以上の組み合わせだった場合、組み合わせを解除する。
 def compare_two_complete(num1, num2):
     df1 = compare_two(num1,num2)
     df1A = df1[df1['distance_'+num1+'_'+num2+''] < 30]
@@ -72,13 +79,15 @@ def compare_two_complete(num1, num2):
     df1B = df1B.append([np.nan for x in range(offset)])
     df1B['x_'+num2+''] = df1B['x_'+num2+''].shift(periods=offset)
     df1B['y_'+num2+''] = df1B['y_'+num2+''].shift(periods=offset)
+    df1B['class_'+num2+''] = df1B['class_'+num2+''].shift(periods=offset)
     df1B['distance_'+num1+'_'+num2+''] = 0
-    print(df1B)
+ 
     #df1B = df1B['x_'+num1+'','y_'+num1+'','x_'+num2+'','y_'+num2+''].fillna(0)
     df_concat = pd.concat([df1A, df1B], join='inner')
     df_concat=df_concat.drop_duplicates()
     return df_concat
 
+#print(compare_two('05','06'))
 #print(compare_two_complete('08','09'))
 
 def compare_many(list):
@@ -93,7 +102,7 @@ def compare_many(list):
     return df_result
 
 list = ["05","06","07","08","09"]
-compare_many(list)
+#compare_many(list)
 
 # #特定の値で
 # df1 = compare_two("05.csv","06.csv")

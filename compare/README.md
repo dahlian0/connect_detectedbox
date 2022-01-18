@@ -7,3 +7,6 @@
 # ToDo
 - yoloで閾値を二つのクラスで超えた場合、二つのbounding Boxが表されている
 - yolo側のオプションを変えるか、bounding boxの確率の高い方だけを残すようにする。
+
+# yolov5の場合
+- txtで表示されているのは, class名,x ,y ,w, h

@@ -69,20 +69,20 @@ def compare_two(num1, num2):
 #上限値を定める
 def compare_two_complete(num1, num2):
     df1 = compare_two(num1,num2)
-    df1A = df1[df1['distance_'+num1+'_'+num2+''] < 30]
+    df1A = df1[df1['distance_'+num1+'_'+num2+''] < 0.1]
     df_result=df1A.drop_duplicates()
     return df_result
 
 def compare_many(list):
     #最初の2つを繋げておく
     #df_result = compare_two_complete(list[0],list[1])
-    df_result = compare_two(list[0],list[1])
+    df_result = compare_two_complete(list[0],list[1])
     #繋げていく
     for index in range(len(list)-2):
         # 5~9日だった場合、ここで6日と7日
-        df = compare_two(list[index+1],list[index+2])
+        df = compare_two_complete(list[index+1],list[index+2])
         df_result = pd.merge(df_result,df, on=['x_'+list[index+1]+'','y_'+list[index+1]+''], how='outer')
-    df_result.to_csv(os.path.join(current_dir,'compare_4days','result.csv'),encoding='utf_8',index=False)
+    df_result.to_csv(os.path.join(current_dir,'compare_4days','result2.csv'),encoding='utf_8',index=False)
     print(df_result)
     return df_result
 

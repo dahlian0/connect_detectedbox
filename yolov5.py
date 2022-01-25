@@ -3,7 +3,7 @@ import os
 import glob
 import pandas as pd
 import re
-
+# 現在のディレクトリを取得
 current_dir=os.path.dirname(os.path.abspath(__file__))
 # 最近傍のBounding Boxの組み合わせを記したDataFrameを返す
 def nearest(a, b):
@@ -37,9 +37,9 @@ def nearest(a, b):
 
 # 2つを比べる
 def compare_two(num1, num2):
-    df1=pd.read_csv(os.path.join(current_dir,'compare_4days', ''+num1+'.txt'), header=None,delim_whitespace=True)
+    df1=pd.read_csv(os.path.join(current_dir,'data', ''+num1+'.txt'), header=None,delim_whitespace=True)
     df1.columns = ['class', 'x', 'y','w','h']
-    df2=pd.read_csv(os.path.join(current_dir,'compare_4days', ''+num2+'.txt'), header=None,delim_whitespace=True)
+    df2=pd.read_csv(os.path.join(current_dir,'data', ''+num2+'.txt'), header=None,delim_whitespace=True)
     df2.columns = ['class', 'x', 'y','w','h']
     l1 = df1[['x','y']].as_matrix()
     l2 = df2[['x','y']].as_matrix()
@@ -56,23 +56,36 @@ def compare_two(num1, num2):
     return df_result
 
 #上限値を定める
-def compare_two_complete(num1, num2):
+def compare_two_complete(num1, num2,limit):
     df1 = compare_two(num1,num2)
-    df1A = df1[df1['distance_'+num1+'_'+num2+''] < 0.1]
+    df1A = df1[df1['distance_'+num1+'_'+num2+''] < limit]
     df_result=df1A.drop_duplicates()
     return df_result
 
-def compare_many(list):
+def compare_many(list,limit):
     #最初の2つを繋げておく
     df_result = compare_two_complete(list[0],list[1])
     #繋げていく
     for index in range(len(list)-2):
         # 5~9日だった場合、ここで6日と7日
-        df = compare_two_complete(list[index+1],list[index+2])
+        df = compare_two_complete(list[index+1],list[index+2],limit)
         df_result = pd.merge(df_result,df, on=['x_'+list[index+1]+'','y_'+list[index+1]+''], how='outer')
     df_result.to_csv(os.path.join(current_dir,'compare_4days','result2.csv'),encoding='utf_8',index=False)
-    print(df_result)
     return df_result
 
-list = ["0604","0605","0606","0607"]
-print(compare_many(list))
+if __name__ == '__main__':
+    val = input('Enter the Mode (two/many): ')
+
+    if val == 'two':
+        val1 = input('Enter the first csv name: ')
+        val2 = input('Enter the second csv name: ')
+        limit = input('Enter the limit: ')
+        compare_two_complete(val1, val2,limit)
+    
+    elif val == 'many':
+        limit = input('Enter the limit: ')
+        os.chdir("/data")
+        compare_many(glob.glob("./*.csv"),limit)
+
+    else:
+        print('入力値は(two/many)から選んでください')

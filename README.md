@@ -7,7 +7,10 @@ Plese use requirements.txt.
 $ pip install -r requirements.txt
 
 ## Usage
-
+The message 'Enter the Mode (two/many):' is displayed.
+If you want to compare two images, use two
+If you want to compare three or more images at the same time, use many
+to compare three or more images at once.
 
 ## License
 This software is released under the MIT License, see LICENSE.

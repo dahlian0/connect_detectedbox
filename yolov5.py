@@ -60,6 +60,7 @@ def compare_two_complete(num1, num2,limit):
     df1 = compare_two(num1,num2)
     df1A = df1[df1['distance_'+num1+'_'+num2+''] < limit]
     df_result=df1A.drop_duplicates()
+    df_result.to_csv(os.path.join(current_dir,'data','result_two.csv'),encoding='utf_8',index=False)
     return df_result
 
 def compare_many(list,limit):
@@ -70,7 +71,7 @@ def compare_many(list,limit):
         # 5~9日だった場合、ここで6日と7日
         df = compare_two_complete(list[index+1],list[index+2],limit)
         df_result = pd.merge(df_result,df, on=['x_'+list[index+1]+'','y_'+list[index+1]+''], how='outer')
-    df_result.to_csv(os.path.join(current_dir,'compare_4days','result2.csv'),encoding='utf_8',index=False)
+    df_result.to_csv(os.path.join(current_dir,'data','result_many.csv'),encoding='utf_8',index=False)
     return df_result
 
 if __name__ == '__main__':

@@ -1,5 +1,7 @@
 # 指定したファイルをすべて除外
 #.gitignoreがおいてある階層配下でindex.htmlというファイル名を全部除外する
-yolov5.py
-text.py
-data
+/example.py
+/example2.py
+/nearest_limit.py
+/nearest.py
+/gitignore

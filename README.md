@@ -2,6 +2,11 @@
 This repository assumes that the object does not move in an image acquired from a fixed point.
 If we have an image acquired from the same location and an image with object detection, we can connect the nearest Bounding Box to each other.
 
+1. txt to csv
+<img width="908" alt="detection" src="https://user-images.githubusercontent.com/48791086/151365335-eeb161f3-dfc8-4a77-a5bc-af12eefd770d.png">
+
+2. Connect the nearest Bounding Box to each other
+<img width="1123" alt="スクリーンショット 2022-01-27 22 19 41" src="https://user-images.githubusercontent.com/48791086/151366987-a148596d-7088-4d8e-a17f-8a6a0d6c1f98.png">
 
 # Installation
 You can easily install the libraries using the requirements.txt file.

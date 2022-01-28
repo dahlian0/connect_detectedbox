@@ -41,6 +41,6 @@ to compare three or more images at once.
 This software is released under the MIT License, see LICENSE.
 
 ## Authors
-Lisa SHINODA (Master Course Student at Kyoto University)
+Risa SHINODA (Master Course Student at Kyoto University)
 
 

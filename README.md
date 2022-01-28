@@ -1,4 +1,4 @@
-# rose_detection
+# connect_detectedbox
 This repository assumes that the object does not move in an image acquired from a fixed point.
 If we have an image acquired from the same location and an image with object detection, we can connect the nearest Bounding Box to each other.
 
